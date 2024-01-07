@@ -11,7 +11,9 @@ add_executable(${APP_NAME}
   ssd1306/display.c
   tasks/update_display_task.c
   tasks/read_data_task.c
-)
+  i2c/i2c.c
+  scd40/scd40.c
+  )
 
 
 target_compile_definitions(${APP_NAME} PRIVATE

@@ -42,8 +42,6 @@
 #define CMD_COM_REMAP_OFF 0xA0
 #define CMD_COM_REMAP_ON 0xA1
 
-void init_i2c();
-void i2c_scan();
 void oled_command(uint8_t command);
 void oled_init();
 void oled_string(char* message);

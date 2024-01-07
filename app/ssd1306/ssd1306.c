@@ -1,45 +1,17 @@
-#define I2C_PORT i2c0
-#define I2C_SDA_PIN 0
-#define I2C_SCL_PIN 1
-
-#define OLED_ADDRESS 0x3C
-
 #include "ssd1306.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "../i2c/i2c.h"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
 
+#define OLED_ADDRESS 0x3C
+
 void clear_screen();
-
-void init_i2c() {
-  printf("init_i2c: Initializing i2c...\n");
-  i2c_init(I2C_PORT, 100 * 1000);  // 100 kHz
-  gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
-  gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
-  i2c_set_slave_mode(I2C_PORT, false, 0);
-  printf("init_i2c: Done\n");
-}
-
-void i2c_scan() {
-  printf("Scanning I2C bus...\n");
-  uint8_t address;
-  uint8_t data;
-
-  for (address = 1; address < 128;
-       address++) {  // 7-bit addresses from 0x01 to 0x7F
-    int result = i2c_read_blocking(I2C_PORT, address, &data, 1, false);
-
-    if (result !=
-        PICO_ERROR_GENERIC) {  // Check if there is a response from the address
-      printf("I2C device detected at address 0x%02X\n", address);
-    }
-  }
-}
 
 void oled_command(uint8_t command) {
   uint8_t data[] = {0x00, command};

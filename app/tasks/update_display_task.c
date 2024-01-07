@@ -123,7 +123,7 @@ void update_display_task(void* task_params) {
   update_display_params* params = (update_display_params*)task_params;
 
   // Other vars
-  int temp_mC = 0;
+  int co2 = 0;
 
   DisplayInfo display_info;
   display_info.wifi_status = STATUS_GOOD;
@@ -131,10 +131,11 @@ void update_display_task(void* task_params) {
   display_info.co2_measurement = 0;  // Temp value
   display_info.flash = false;
 
+  update_display(&display_info, params->fb, params->wm, params->rot);
   while (1) {
-    if (xQueueReceive(queue, &temp_mC, portMAX_DELAY) == pdPASS) {
+    if (xQueueReceive(queue, &co2, portMAX_DELAY) == pdPASS) {
       display_info.wifi_status = wifi_status();
-      display_info.co2_measurement = (int)temp_mC / 1000;
+      display_info.co2_measurement = co2;
 
       update_display(&display_info, params->fb, params->wm, params->rot);
     }

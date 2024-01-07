@@ -5,8 +5,10 @@
 #include <stdlib.h>
 #include <task.h>
 
+#include "i2c/i2c.h"
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
+#include "scd40/scd40.h"
 #include "ssd1306/display.h"
 #include "ssd1306/ssd1306.h"
 #include "tasks/read_data_task.h"
@@ -71,13 +73,12 @@ int main() {
   ud_params.fb = &fb;
   ud_params.wm = wm;
   ud_params.rot = rot;
-
   printf("main: Creating Tasks\n");
   BaseType_t read_data_status = xTaskCreate(read_data_task, "READ_DATA_TASK",
-                                            256, NULL, 2, &read_data_handle);
+                                            2056, NULL, 2, &read_data_handle);
 
   BaseType_t update_display_status =
-      xTaskCreate(update_display_task, "UPDATE_DISPLAY_TASK", 1024,
+      xTaskCreate(update_display_task, "UPDATE_DISPLAY_TASK", 4112,
                   (void*)&ud_params, 1, &update_display_handle);
 
   printf("main: Creating queue\n");
@@ -91,7 +92,6 @@ int main() {
            update_display_status);
     return -1;
   }
-
   // should never be reached
   while (1)
     ;
