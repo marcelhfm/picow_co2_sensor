@@ -9,6 +9,7 @@ add_executable(${APP_NAME}
   ssd1306/ssd1306.c
   ssd1306/framebuffer.c
   ssd1306/display.c
+  network/wifi.c
   tasks/update_display_task.c
   tasks/read_data_task.c
   i2c/i2c.c

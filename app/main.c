@@ -6,38 +6,25 @@
 #include <task.h>
 
 #include "i2c/i2c.h"
+#include "network/wifi.h"
 #include "pico/cyw43_arch.h"
 #include "pico/stdlib.h"
-#include "scd40/scd40.h"
 #include "ssd1306/display.h"
 #include "ssd1306/ssd1306.h"
 #include "tasks/read_data_task.h"
 #include "tasks/update_display_task.h"
 
+// Check these definitions where added from the makefile
+#ifndef WIFI_SSID
+#error "WIFI_SSID not defined"
+#endif
+#ifndef WIFI_PASSWORD
+#error "WIFI_PASSWORD not defined"
+#endif
+
 volatile QueueHandle_t queue = NULL;
 TaskHandle_t read_data_handle = NULL;
 TaskHandle_t update_display_handle = NULL;
-
-void init_wifi(const char* ssid, const char* password) {
-  if (cyw43_arch_init()) {
-    printf("Wi-Fi init failed\n");
-    while (1)
-      ;
-  }
-
-  printf("init_wifi: Connecting to wifi...\n");
-
-  int status =
-      cyw43_arch_wifi_connect_blocking(ssid, password, CYW43_AUTH_WPA2_AES_PSK);
-
-  if (status != 0) {
-    printf("init_wifi: Wi-Fi Connection failed: %d \n", status);
-    // while (1)
-    //;
-  }
-
-  printf("init_wifi: Successfully connected!\n");
-}
 
 int main() {
   stdio_init_all();
@@ -52,7 +39,28 @@ int main() {
     return -1;
   }
 
-  init_wifi(ssid, password);
+  // Wifi stuff
+  if (wifi_init()) {
+    printf("main: Wifi controller init.\n");
+  } else {
+    printf("main: Failed to initialize Wifi Controller\n");
+  }
+
+  if (wifi_join(WIFI_SSID, WIFI_PASSWORD, 5)) {
+    printf("main: Connected to WIFI\n");
+  } else {
+    printf("main: Failed to connect to wifi\n");
+  }
+
+  // Print MAC Address
+  char macStr[20];
+  wifi_get_mac_address_str(macStr);
+  printf("main: MAC ADDRESS: %s\n", macStr);
+
+  // Print IP Address
+  char ipStr[20];
+  wifi_get_ip_address_str(ipStr);
+  printf("main: IP ADDRESS: %s\n", ipStr);
 
   // Init display
   init_i2c();
