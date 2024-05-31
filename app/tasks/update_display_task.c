@@ -7,12 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../main.h"
 #include "../ssd1306/display.h"
 #include "../ssd1306/framebuffer.h"
 #include "../ssd1306/ssd1306.h"
 #include "cyw43.h"
-#include "pico/cyw43_arch.h"
 #include "portmacro.h"
 
 extern QueueHandle_t display_queue;
